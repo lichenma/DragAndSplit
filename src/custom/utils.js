@@ -1,4 +1,4 @@
-import { HEROES, COMICS } from './data';
+import {cloneDeep} from 'lodash'
 
 // the Knuth shuffle algorithm
 export function shuffle(array) {
@@ -21,31 +21,14 @@ export function shuffle(array) {
   return array;
 }
 
-// method to handle points calculation based on sort order as well as grouping
-function calculateScore(groupedHeroes, comics) {
-  const correctOrder = HEROES.filter(hero => hero.comics === comics).sort((a, b) =>
-    a.name.toLowerCase() < b.name.toLowerCase() ? -1 : 1
-  );
-
-  return groupedHeroes.reduce((score, { name }, index) => {
-    const maxPoint = HEROES.length;
-    const heroIndex = correctOrder.findIndex(hero => hero.name === name);
-    const penalty = heroIndex >= 0 ? Math.abs(index - heroIndex) : maxPoint;
-    console.log({ name, points: maxPoint - penalty });
-    return score + (maxPoint - penalty);
-  }, 0);
+export function sum(array) {
+  var res = 0; 
+  array.map((item) => res=+(res+item.cost).toFixed(12))
+  return res;
 }
 
-export function getTotalScore(groups, timeLeft) {
-  const gameScore = Object.values(COMICS).reduce(
-    (sum, comicsName) => sum + calculateScore(groups[comicsName], comicsName),
-    0
-  );
-  const timeBonus = getSeconds(timeLeft);
-  return gameScore ? gameScore + timeBonus : 0;
-}
 
-// method to handle to the heroe cards movement
+// method to handle to the item cards movement
 export const move = (state, source, destination) => {
   const srcListClone = [...state[source.droppableId]];
   const destListClone =
@@ -56,25 +39,22 @@ export const move = (state, source, destination) => {
   const [movedElement] = srcListClone.splice(source.index, 1);
   destListClone.splice(destination.index, 0, movedElement);
 
+  const balanceClone = cloneDeep(state.balance)
+  if (source.droppableId!=destination.droppableId){
+    // we need to update the balances at this point
+    balanceClone[source.droppableId] = +(state.balance[source.droppableId] - movedElement.cost).toFixed(12)
+    balanceClone[destination.droppableId] = +(state.balance[destination.droppableId] + movedElement.cost).toFixed(12)
+    
+    console.log(movedElement);
+    console.log(source);
+  }
   return {
     [source.droppableId]: srcListClone,
+    balance: balanceClone,
     ...(source.droppableId === destination.droppableId
       ? {}
       : {
           [destination.droppableId]: destListClone,
         }),
   };
-};
-
-// method to get time left
-export const getTimeLeft = deadline => deadline - Date.now();
-
-// method to get time left in seconds
-export const getSeconds = timeLeft => Math.floor(timeLeft / 1000);
-
-// enums for representing the game state
-export const GAME_STATE = {
-  READY: 'ready',
-  PLAYING: 'playing',
-  DONE: 'done',
 };

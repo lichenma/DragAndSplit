@@ -1,68 +1,29 @@
 import React from 'react';
 import { DragDropContext } from 'react-beautiful-dnd';
 
-import { HEROES, COMICS } from './custom/data';
-import { shuffle, getTimeLeft, move, GAME_STATE } from './custom/utils';
+import { ITEMS, ROOMMATES } from './custom/data';
+import { shuffle, move, sum } from './custom/utils';
 
-import Modal from './components/Modal';
 import Header from './components/Header';
 import Dropzone from './components/Dropzone';
 import Footer from './components/Footer';
 
-const GAME_DURATION = 1000 * 30; // 30 seconds
-
 const initialState = {
-  // we initialize the state by populating the bench with a shuffled collection of heroes
-  bench: shuffle(HEROES),
-  [COMICS.DC]: [],
-  [COMICS.MARVEL]: [],
-  gameState: GAME_STATE.READY,
-  timeLeft: 0,
+  // we initialize the state by populating the bench with a shuffled collection of items
+  bench: shuffle(ITEMS),
+  [ROOMMATES.JOANNA]: [],
+  [ROOMMATES.LI]: [],
+  [ROOMMATES.KAIZEN]: [],
+  balance: {
+    bench: sum(ITEMS),
+    [ROOMMATES.LI]: 0,
+    [ROOMMATES.JOANNA]: 0, 
+    [ROOMMATES.KAIZEN]: 0,
+  }
 };
 
 class App extends React.Component {
   state = initialState;
-
-  startGame = () => {
-    this.currentDeadline = Date.now() + GAME_DURATION;
-
-    this.setState(
-      {
-        gameState: GAME_STATE.PLAYING,
-        timeLeft: getTimeLeft(this.currentDeadline),
-      },
-      this.gameLoop
-    );
-  };
-
-  gameLoop = () => {
-    this.timer = setInterval(() => {
-      const timeLeft = getTimeLeft(this.currentDeadline);
-      const isTimeout = timeLeft <= 0;
-      if (isTimeout && this.timer) {
-        clearInterval(this.timer);
-      }
-
-      this.setState({
-        timeLeft: isTimeout ? 0 : timeLeft,
-        ...(isTimeout ? { gameState: GAME_STATE.DONE } : {}),
-      });
-    }, 1000);
-  };
-
-  endGame = () => {
-    if (this.timer) {
-      clearInterval(this.timer);
-    }
-
-    this.setState({
-      gameState: GAME_STATE.DONE,
-    });
-  };
-
-  resetGame = () => {
-    this.setState(initialState);
-  };
 
   onDragEnd = ({ source, destination }) => {
     if (!destination) {
@@ -75,50 +36,48 @@ class App extends React.Component {
   };
 
   render() {
-    const { gameState, timeLeft, bench, ...groups } = this.state;
-    const isDropDisabled = gameState === GAME_STATE.DONE;
+    const { bench } = this.state;
+    const isDropDisabled = false;
 
     return (
       <>
-        <Header gameState={gameState} timeLeft={timeLeft} endGame={this.endGame} />
-        {this.state.gameState !== GAME_STATE.PLAYING && (
-          <Modal
-            startGame={this.startGame}
-            resetGame={this.resetGame}
-            timeLeft={timeLeft}
-            gameState={gameState}
-            groups={groups}
-          />
-        )}
-        {(this.state.gameState === GAME_STATE.PLAYING ||
-          this.state.gameState === GAME_STATE.DONE) && (
+        <Header endGame={this.endGame} />
           <DragDropContext onDragEnd={this.onDragEnd}>
             <div className="container">
               <div className="columns">
+                <Dropzone 
+                  id="bench" 
+                  items={bench} 
+                  balance={this.state.balance["bench"]}
+                  isDropDisabled={isDropDisabled} 
+                />
                 <Dropzone
-                  id={COMICS.MARVEL}
-                  heroes={this.state[COMICS.MARVEL]}
+                  id={ROOMMATES.LI}
+                  items={this.state[ROOMMATES.LI]}
+                  balance={this.state.balance[ROOMMATES.LI]}
                   isDropDisabled={isDropDisabled}
                 />
-                <Dropzone id="bench" heroes={bench} isDropDisabled={isDropDisabled} />
                 <Dropzone
-                  id={COMICS.DC}
-                  heroes={this.state[COMICS.DC]}
+                  id={ROOMMATES.JOANNA}
+                  items={this.state[ROOMMATES.JOANNA]}
+                  balance={this.state.balance[ROOMMATES.JOANNA]}
+                  isDropDisabled={isDropDisabled}
+                />
+                <Dropzone
+                  id={ROOMMATES.KAIZEN}
+                  items={this.state[ROOMMATES.KAIZEN]}
+                  balance={this.state.balance[ROOMMATES.KAIZEN]}
                   isDropDisabled={isDropDisabled}
                 />
               </div>
             </div>
           </DragDropContext>
-        )}
         <Footer />
       </>
     );
   }
 
   componentWillUnmount() {
-    if (this.timer) {
-      clearInterval(this.timer);
-    }
   }
 }
 

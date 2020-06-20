@@ -7,7 +7,7 @@ div.menu .menu-item.tile.tile-centered {
   margin-top: 5px;
 }
 
-.menu.hero-list {
+.menu.item-list {
   z-index: inherit;
   transform: none;
   min-height: 500px;

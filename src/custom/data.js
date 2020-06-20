@@ -1,55 +1,56 @@
-export const COMICS = {
-  DC: 'dc',
-  MARVEL: 'marvel',
+export const ROOMMATES = {
+  LI: 'Li',
+  JOANNA: 'Joanna',
+  KAIZEN: 'Kaizen', 
 };
 
-export const HEROES = [
+export const ITEMS = [
   {
     name: 'Superman',
-    comics: 'dc',
+    cost: 1.99,
   },
   {
     name: 'Batman',
-    comics: 'dc',
+    cost: 2.99,
   },
   {
     name: 'Flash',
-    comics: 'dc',
+    cost: 3.99,
   },
   {
     name: 'Aquaman',
-    comics: 'dc',
+    cost: 4.99,
   },
   {
     name: 'Wonder Woman',
-    comics: 'dc',
+    cost: 5.99,
   },
   {
     name: 'Green Lantern',
-    comics: 'dc',
+    cost: 6.99,
   },
   {
     name: 'Iron Man',
-    comics: 'marvel',
+    cost: 7.99,
   },
   {
     name: 'Spiderman',
-    comics: 'marvel',
+    cost: 8.99,
   },
   {
     name: 'Captain America',
-    comics: 'marvel',
+    cost: 9.99,
   },
   {
     name: 'Thor',
-    comics: 'marvel',
+    cost: 10.99,
   },
   {
     name: 'Hulk',
-    comics: 'marvel',
+    cost: 11.99,
   },
   {
     name: 'Black Widow',
-    comics: 'marvel',
+    cost: 12.99,
   },
 ];

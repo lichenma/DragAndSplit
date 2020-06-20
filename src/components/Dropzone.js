@@ -1,15 +1,16 @@
 import React from 'react';
 import { Droppable, Draggable } from 'react-beautiful-dnd';
 
-const Dropzone = ({ isDropDisabled, heroes, id }) => (
-  <div className="column col-4">
+const Dropzone = ({ isDropDisabled, balance, items, id }) => (
+  <div className="column col-3">
     <div className="divider" data-content={id.toUpperCase()} />
+    <h3>{balance}</h3>
     <Droppable droppableId={id} isDropDisabled={isDropDisabled}>
       {provided => {
         return (
-          <div className="menu hero-list" {...provided.droppableProps} ref={provided.innerRef}>
-            {heroes.map(({ name }, index) => (
-              <Hero key={name} name={name} index={index} />
+          <div className="menu item-list" {...provided.droppableProps} ref={provided.innerRef}>
+            {items.map(({ name, cost }, index) => (
+              <Item key={name} name={name} index={index} cost={cost}/>
             ))}
             {provided.placeholder}
           </div>
@@ -19,8 +20,8 @@ const Dropzone = ({ isDropDisabled, heroes, id }) => (
   </div>
 );
 
-const Hero = ({ name, index }) => (
-  <Draggable key={name} draggableId={name} index={index}>
+const Item = ({ name, index, cost }) => (
+  <Draggable key={name} draggableId={name} index={index} cost={cost}>
     {provided => {
       return (
         <div
@@ -33,6 +34,7 @@ const Hero = ({ name, index }) => (
             <img src={`./hero_icons/${name.toLowerCase().replace(' ', '-')}.svg`} alt={name} />
           </figure>
           <div className="tile-content">{name}</div>
+          <div className="title-content">{cost}</div>
         </div>
       );
     }}
