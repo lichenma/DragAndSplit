@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { DragDropContext } from 'react-beautiful-dnd';
+import {cloneDeep} from 'lodash'
 
 import { ITEMS, ROOMMATES } from './custom/data';
 import { shuffle, move, sum } from './custom/utils';
@@ -7,9 +8,11 @@ import { shuffle, move, sum } from './custom/utils';
 import Header from './components/Header';
 import Dropzone from './components/Dropzone';
 import Footer from './components/Footer';
+import $ from 'jquery'
 
 const initialState = {
   // we initialize the state by populating the bench with a shuffled collection of items
+  searchString: '',
   bench: shuffle(ITEMS),
   [ROOMMATES.JOANNA]: [],
   [ROOMMATES.LI]: [],
@@ -24,7 +27,6 @@ const initialState = {
 
 class App extends React.Component {
   state = initialState;
-
   onDragEnd = ({ source, destination }) => {
     if (!destination) {
       return;
@@ -37,6 +39,12 @@ class App extends React.Component {
 
   query = () => {
     console.log("TODO");
+    // parse the input
+    console.log(this.state.searchString);
+  }
+
+  changeSearchText = (val) => {
+    this.state.searchString = val;
   }
 
   render() {
@@ -45,7 +53,7 @@ class App extends React.Component {
 
     return (
       <>
-        <Header query={this.query} />
+        <Header query={this.query} changeSearchText={this.changeSearchText} />
           <DragDropContext onDragEnd={this.onDragEnd}>
             <div className="container">
               <div className="columns">
