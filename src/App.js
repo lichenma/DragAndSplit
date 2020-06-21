@@ -35,13 +35,17 @@ class App extends React.Component {
     });
   };
 
+  query = () => {
+    console.log("TODO");
+  }
+
   render() {
     const { bench } = this.state;
     const isDropDisabled = false;
 
     return (
       <>
-        <Header endGame={this.endGame} />
+        <Header query={this.query} />
           <DragDropContext onDragEnd={this.onDragEnd}>
             <div className="container">
               <div className="columns">
@@ -72,7 +76,7 @@ class App extends React.Component {
               </div>
             </div>
           </DragDropContext>
-        <Footer />
+        <Footer/>
       </>
     );
   }

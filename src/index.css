@@ -1,3 +1,7 @@
+.navbar {
+  margin-bottom: 1em !important;
+}
+
 header.navbar {
   height: 40px;
   margin: 5px 20px;
@@ -13,8 +17,16 @@ div.menu .menu-item.tile.tile-centered {
   min-height: 500px;
 }
 
-footer {
-  position: fixed;
+.footer-copyright {
+  margin-top: 4em;
   bottom: 0;
   font-size: 14px;
+}
+
+.btn {
+  padding: .15rem .4rem !important;
+}
+
+p {
+  font-size: small;
 }
