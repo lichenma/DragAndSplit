@@ -13,12 +13,14 @@ import $ from 'jquery'
 const initialState = {
   // we initialize the state by populating the bench with a shuffled collection of items
   searchString: '',
-  bench: shuffle(ITEMS),
+  // bench: shuffle(ITEMS),
+  bench: [],
   [ROOMMATES.JOANNA]: [],
   [ROOMMATES.LI]: [],
   [ROOMMATES.KAIZEN]: [],
   balance: {
-    bench: sum(ITEMS),
+    // bench: sum(ITEMS),
+    bench: 0,
     [ROOMMATES.LI]: 0,
     [ROOMMATES.JOANNA]: 0, 
     [ROOMMATES.KAIZEN]: 0,
@@ -40,7 +42,28 @@ class App extends React.Component {
   query = () => {
     console.log("TODO");
     // parse the input
-    console.log(this.state.searchString);
+    var json = JSON.parse(this.state.searchString); 
+
+    var itemsArr = json.data.order_items; 
+
+    var benchClone = this.state.bench
+    var balanceClone = this.state.balance
+    console.log(balanceClone);
+    itemsArr.map((item) => {
+      var imageUrl = item.item.image_url; 
+      var name = item.item.display_name;
+      var cost = +(item.item.cost); 
+      balanceClone['bench'] = +(balanceClone['bench'] + cost).toFixed(12)
+      benchClone.push({
+        name: name,
+        cost: cost, 
+        imageSrc: imageUrl
+      })
+    }); 
+    var newState = {...this.state};
+    newState.bench = benchClone;
+    newState.balance = balanceClone; 
+    this.setState(newState);
   }
 
   changeSearchText = (val) => {
@@ -59,7 +82,7 @@ class App extends React.Component {
               <div className="columns">
                 <Dropzone 
                   id="bench" 
-                  items={bench} 
+                  items={this.state['bench']} 
                   balance={this.state.balance["bench"]}
                   isDropDisabled={isDropDisabled} 
                 />
