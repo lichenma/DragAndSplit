@@ -30,3 +30,7 @@ div.menu .menu-item.tile.tile-centered {
 p {
   font-size: small;
 }
+
+.tile {
+  font-size: medium;
+}

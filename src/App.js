@@ -48,11 +48,19 @@ class App extends React.Component {
 
     var benchClone = this.state.bench
     var balanceClone = this.state.balance
-    console.log(balanceClone);
+    // look into substitute - that is the item which replaces the current item
+    console.log(json);
     itemsArr.map((item) => {
-      var imageUrl = item.item.image_url; 
-      var name = item.item.display_name;
-      var cost = +(item.item.cost); 
+      var itemData; 
+      if (item.status == 'replaced') {
+        // then we want to display the product substitute picture and name
+        itemData = item.substitute;
+      } else {
+        itemData = item.item; 
+      }
+      var imageUrl = itemData.image_url; 
+      var name = itemData.display_name;
+      var cost = +(item.final_charge); 
       balanceClone['bench'] = +(balanceClone['bench'] + cost).toFixed(12)
       benchClone.push({
         name: name,
@@ -60,6 +68,28 @@ class App extends React.Component {
         imageSrc: imageUrl
       })
     }); 
+
+    // for delivery cost 
+    benchClone.push({
+      name: "Delivery", 
+      cost: json.data.shipping_price,
+      imageSrc: './hero_icons/delivery.webp'
+    })
+
+    // for gratuity (Instacart has a minimum for this value)
+    benchClone.push({
+      name: "Gratuity",
+      cost: json.data.tip_amount,
+      imageSrc: "./hero_icons/tip.png"
+    })
+
+    // for service fee 
+    benchClone.push({
+      name: "Service Fee",
+      cost: +(json.data.subtotal * json.data.service_fee_rate).toFixed(12), 
+      imageSrc: './hero_icons/service.png' 
+    })
+
     var newState = {...this.state};
     newState.bench = benchClone;
     newState.balance = balanceClone; 
